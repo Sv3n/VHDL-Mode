@@ -1531,7 +1531,7 @@ contexts:
     - match: |-
         (?xi)
           (({{identifier}})\s*(:)\s*)?
-          ((assert)\s*)
+          ((assert)\b)
       captures:
         2: entity.name.label.vhdl
         3: punctuation.separator.vhdl
@@ -1555,6 +1555,7 @@ contexts:
     - include: seq-loops
     - include: seq-shorties
     - include: seq-variable-assignment
+    - include: assertion-statement
     # The signal assignment should be next to last as the assignment
     # operator is the same as less-than-or-equal.
     - include: conc-signal-assignment
@@ -1578,7 +1579,7 @@ contexts:
         - include: stray-parens
         - include: reserved-words
     # With bit index
-    - match: (?i)({{identifier}})(\()(({{decchars}})+)(\))\s*(:\=)
+    - match: (?i)({{identifier}})\s*(\()\s*(({{identifier}})+)\s*(\))\s*(:\=)
       captures:
         1: variable.other.vhdl
         2: punctuation.group.parens.begin.vhdl
@@ -1596,7 +1597,7 @@ contexts:
         - include: stray-parens
         - include: reserved-words
     # With slice
-    - match: (?i)({{identifier}})(\()(({{decchars}})+)\s*(to|downto)\s*(({{decchars}})+)(\))\s*(:\=)
+    - match: (?i)({{identifier}})\s*(\()\s*(({{decchars}})+)\s+(to|downto)\s+(({{decchars}})+)\s*(\))\s*(:\=)
       captures:
         1: variable.other.vhdl
         2: punctuation.group.parens.begin.vhdl
@@ -1616,7 +1617,7 @@ contexts:
         - include: stray-parens
         - include: reserved-words
     # With attribute range/reverse_range
-    - match: '(?i)({{identifier}})(\()({{identifier}})''(range|reverse_range)(\))\s*(:\=)'
+    - match: '(?i)({{identifier}})\s*(\()\s*({{identifier}})''(range|reverse_range)\s*(\))\s*(:\=)'
       captures:
         1: variable.other.vhdl
         2: punctuation.group.parens.begin.vhdl
@@ -1962,7 +1963,7 @@ contexts:
     # Any of the printable characters in the standard character set can be
     # used.  Used the non-word character element to protect against
     # single quote used for attributes (e.g. a'range)
-    - match: '[^a-zA-Z0-9]('')'
+    - match: '[^a-zA-Z0-9\(\)]('')'
       captures:
         1: punctuation.definition.string.begin.vhdl
       push:
@@ -2045,7 +2046,7 @@ contexts:
       push:
         - meta_include_prototype: false
         - meta_scope: string.quoted.double.vhdl
-        - match: '(")'
+        - match: '"'
           scope: punctuation.definition.string.end.vhdl
           pop: true
         - match: \n
